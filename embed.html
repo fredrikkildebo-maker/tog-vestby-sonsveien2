@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Togtrafikk Vestby & Sonsveien (Embed)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: transparent;
+            --text: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.97);
+            --shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+            --grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        body {
+            margin: 0;
+            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+        }
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+            margin: 0 0 12px 0;
+        }
+        .title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+        }
+        .updated {
+            background: #0f172a;
+            color: #34d399;
+            padding: 6px 10px;
+            border-radius: 10px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-weight: 700;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+        @media (min-width: 900px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+        }
+        .station-card {
+            background: var(--card-bg);
+            border: 3px solid rgba(15, 23, 42, 0.06);
+            box-shadow: var(--shadow);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+        .station-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            color: white;
+            padding: 14px 16px;
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .station-body {
+            padding: 14px 16px;
+        }
+        .dir-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 0 8px 0;
+        }
+        .dir-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+        }
+        .direction-indicator {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+        }
+        .north-bound { background: #10b981; }
+        .south-bound { background: #ef4444; }
+
+        .train-block {
+            background: var(--grad);
+            color: white;
+            font-weight: 600;
+            border-radius: 14px;
+            padding: 10px 12px;
+            margin: 8px 0;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .train-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .train-time {
+            font-size: 20px;
+            font-weight: 900;
+            min-width: 56px;
+        }
+        .train-line {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+        }
+        .train-dest {
+            font-size: 12px;
+            opacity: 0.92;
+        }
+        .train-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            display: inline-block;
+        }
+        .status-on-time {
+            background: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+        .status-delayed {
+            background: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+        .status-cancelled {
+            background: #ef4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="header">
+            <h2 class="title">Togtrafikk: Vestby og Sonsveien</h2>
+            <div class="updated" id="lastUpdate">Oppdatert --:--</div>
+        </div>
+
+        <div class="grid">
+            <section class="station-card">
+                <div class="station-header">Vestby stasjon</div>
+                <div class="station-body">
+                    <div class="dir-head">
+                        <div class="dir-title">Mot Oslo S</div>
+                        <div class="direction-indicator north-bound">⬆</div>
+                    </div>
+                    <div id="vestby-north"></div>
+
+                    <div class="dir-head" style="margin-top: 12px;">
+                        <div class="dir-title">Mot Mysen/Kornsjø</div>
+                        <div class="direction-indicator south-bound">⬇</div>
+                    </div>
+                    <div id="vestby-south"></div>
+                </div>
+            </section>
+
+            <section class="station-card">
+                <div class="station-header">Sonsveien stasjon</div>
+                <div class="station-body">
+                    <div class="dir-head">
+                        <div class="dir-title">Mot Oslo S</div>
+                        <div class="direction-indicator north-bound">⬆</div>
+                    </div>
+                    <div id="sonsveien-north"></div>
+
+                    <div class="dir-head" style="margin-top: 12px;">
+                        <div class="dir-title">Mot Mysen/Kornsjø</div>
+                        <div class="direction-indicator south-bound">⬇</div>
+                    </div>
+                    <div id="sonsveien-south"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const defaultTrainData = {
+            vestby: {
+                north: [
+                    { time: '12:15', line: 'R20', destination: 'Oslo S', status: 'on-time', delay: 0 },
+                    { time: '12:35', line: 'L2', destination: 'Oslo S', status: 'delayed', delay: 5 },
+                    { time: '12:55', line: 'R21', destination: 'Oslo S', status: 'on-time', delay: 0 }
+                ],
+                south: [
+                    { time: '12:20', line: 'R20', destination: 'Mysen', status: 'on-time', delay: 0 },
+                    { time: '12:40', line: 'L2', destination: 'Ski', status: 'on-time', delay: 0 },
+                    { time: '13:00', line: 'R21', destination: 'Kornsjø', status: 'delayed', delay: 3 }
+                ]
+            },
+            sonsveien: {
+                north: [
+                    { time: '12:18', line: 'R20', destination: 'Oslo S', status: 'on-time', delay: 0 },
+                    { time: '12:38', line: 'L2', destination: 'Oslo S', status: 'on-time', delay: 0 },
+                    { time: '12:58', line: 'R21', destination: 'Oslo S', status: 'delayed', delay: 4 }
+                ],
+                south: [
+                    { time: '12:23', line: 'R20', destination: 'Mysen', status: 'on-time', delay: 0 },
+                    { time: '12:43', line: 'L2', destination: 'Ski', status: 'delayed', delay: 2 },
+                    { time: '13:03', line: 'R21', destination: 'Kornsjø', status: 'on-time', delay: 0 }
+                ]
+            }
+        };
+
+        function parseDataFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const raw = params.get('data');
+            if (!raw) return null;
+            try {
+                return JSON.parse(raw);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'on-time': return 'status-on-time';
+                case 'delayed': return 'status-delayed';
+                case 'cancelled': return 'status-cancelled';
+                default: return 'status-on-time';
+            }
+        }
+
+        function getStatusText(status, delay) {
+            switch(status) {
+                case 'on-time': return 'I rute';
+                case 'delayed': return `Forsinket ${delay} min`;
+                case 'cancelled': return 'Innstilt';
+                default: return 'I rute';
+            }
+        }
+
+        function createTrainBlock(train) {
+            const statusClass = getStatusClass(train.status);
+            const statusText = getStatusText(train.status, train.delay || 0);
+
+            return `
+                <div class="train-block">
+                    <div class="train-left">
+                        <div class="train-time">${train.time || ''}</div>
+                        <div>
+                            <div class="train-line">${train.line || ''}</div>
+                            <div class="train-dest">${train.destination || ''}</div>
+                        </div>
+                    </div>
+                    <div class="train-right">
+                        <span class="status-indicator ${statusClass}"></span>
+                        <span>${statusText}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStation(data, stationKey, northEl, southEl) {
+            const station = data[stationKey] || {};
+            const north = Array.isArray(station.north) ? station.north : [];
+            const south = Array.isArray(station.south) ? station.south : [];
+            northEl.innerHTML = north.map(createTrainBlock).join('');
+            southEl.innerHTML = south.map(createTrainBlock).join('');
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('lastUpdate').textContent = `Oppdatert ${timeString}`;
+        }
+
+        const trainData = parseDataFromURL() || defaultTrainData;
+        renderStation(trainData, 'vestby', document.getElementById('vestby-north'), document.getElementById('vestby-south'));
+        renderStation(trainData, 'sonsveien', document.getElementById('sonsveien-north'), document.getElementById('sonsveien-south'));
+        updateTime();
+    </script>
+</body>
+</html>
